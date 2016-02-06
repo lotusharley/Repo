@@ -1,0 +1,72 @@
+﻿<Page
+    x:Class="xTrace.Views.Frm_Route"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:xTrace.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:data="using:xTrace.DataModel"
+    mc:Ignorable="d">
+    <Page.Resources>
+        <DataTemplate x:Key="Navpoints_Template" x:DataType="data:XNavpoint">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="85"></ColumnDefinition>
+                    <ColumnDefinition Width="85"></ColumnDefinition>
+                    <ColumnDefinition Width="85"></ColumnDefinition>
+                    <ColumnDefinition Width="85"></ColumnDefinition>
+                    <ColumnDefinition Width="30"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <TextBlock Tag="navpoint" Grid.Column="0" Text="{Binding PointName}"></TextBlock>
+                <TextBlock Tag="frequence"  Grid.Column="1" Text="{Binding Frequence}"></TextBlock>
+                <TextBlock Tag="longtitude" Grid.Column="2" Text="{Binding Longtitude}"></TextBlock>
+                <TextBlock Tag="lantitude"  Grid.Column="3" Text="{Binding Lantitude}"></TextBlock>
+                <Button Grid.Column="2" Grid.ColumnSpan="4">
+                    <TextBlock Text="&#xE711;"  FontFamily="Segoe MDL2 Assets"></TextBlock>
+                </Button>
+                
+            </Grid>
+        </DataTemplate>
+    </Page.Resources>
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
+        </Grid.RowDefinitions>
+        <RelativePanel Grid.Row="0"  Margin="20,0,20,0">
+            <StackPanel x:Name="pnl_Departure"  RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignRightWithPanel="True" RelativePanel.Below="btn_AppendNavpoint">
+                <TextBox x:Name="txt_Departure_ICAO" Header="Departure ICAO" PlaceholderText="ICAO"></TextBox>
+                <TextBlock x:Name="txt_Departure_Description" Text="Depart Airport Descriptions" Foreground="#FFBEBEC7" ></TextBlock>
+                <Line Margin="0,10,0,10" Fill="LightGray" Height="2" ></Line>
+            </StackPanel>
+            <TextBox x:Name="txt_Waypoint_Source" RelativePanel.AlignTopWithPanel="True" RelativePanel.AlignLeftWithPanel="True" 
+                     RelativePanel.AlignRightWithPanel="True" Height="80" 
+                     PlaceholderText="VM W77 LADIX V31 YQG W142 DALIM A593 DPX" MaxWidth="380" Header="Navaids/Waypoints/ATS" TextWrapping="Wrap"></TextBox>
+            <ComboBox x:Name="list_Cycles" RelativePanel.AlignLeftWithPanel="True" RelativePanel.Below="txt_Waypoint_Source"></ComboBox>
+            <Button x:Name="btn_AppendNavpoint" Width="170" HorizontalAlignment="Stretch" Click="btn_AppendNavpoint_Click" RelativePanel.Below="txt_Waypoint_Source" RelativePanel.AlignRightWithPanel="True" Margin="0,0,10,0">
+                <RelativePanel>
+                    <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8FB;" FontSize="20" Margin="0,3,0,0"/>
+                    <TextBlock Text="Accept"
+    							Margin="30,0,0,0"
+    							VerticalAlignment="Center"
+    							FontSize="18" />
+                </RelativePanel>
+            </Button>
+            <StackPanel x:Name="pnl_Approch" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignRightWithPanel="True" RelativePanel.AlignBottomWithPanel="True">
+                <Line Margin="0,10,0,10" Fill="LightGray" Height="2" ></Line>
+                <TextBox x:Name="txt_Approch_ICAO" Header="Approch ICAO" PlaceholderText="Approch ICAO"></TextBox>
+                <TextBlock x:Name="txt_Approch_Description" Text="Approch Airport Descriptions" Foreground="#FFBEBEC7" ></TextBlock>
+            </StackPanel>
+            <ListView x:Name="lst_Waypoints" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignRightWithPanel="True" 
+                      RelativePanel.Below="pnl_Departure" RelativePanel.Above="pnl_Approch" IsItemClickEnabled="False" Margin="0,10,0,0"
+                      ItemTemplate="{StaticResource Navpoints_Template}">
+            </ListView>
+            
+        </RelativePanel>
+        <RelativePanel Grid.Row="1" HorizontalAlignment="Center">
+            <Button x:Name="btn_CancelRoute" Content="Cancel" HorizontalAlignment="Left" Height="32" VerticalAlignment="Top" Width="65" RelativePanel.AlignBottomWithPanel="True" Click="btn_CancelRoute_Click"/>
+            <Button x:Name="btn_DrawRoute" Content="OK" HorizontalAlignment="Left" Height="32" VerticalAlignment="Top" Width="65" RelativePanel.AlignBottomWithPanel="True" RelativePanel.RightOf="btn_CancelRoute" Margin="20,0,0,0"/>
+        </RelativePanel>
+    </Grid>
+</Page>
