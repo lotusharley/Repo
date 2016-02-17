@@ -7,10 +7,15 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     Title=""
-    PrimaryButtonText="Stop Trace"
+    PrimaryButtonText="OK"
     PrimaryButtonClick="ContentDialog_PrimaryButtonClick">
 
     <Grid>
-        <TextBlock Text="Start Receive DATA FROM "></TextBlock>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <TextBlock x:Name="txt_Content" Grid.Row="1"></TextBlock>
+        <TextBlock x:Name="txt_Title" Grid.Row="0" Text="Start Listening" FontSize="32"></TextBlock>
     </Grid>
 </ContentDialog>
