@@ -32,6 +32,7 @@ namespace xTrace
         Windows.UI.Color colorTitleButtonBg = Windows.UI.ColorHelper.FromArgb(0, 54, 54, 54);
         Control.xTraceGPSEFISReceiver xReceiver;
         Windows.UI.Xaml.Controls.Button btn_xPlane = null;
+        private static Views.Dlg_StartTrace dlgTrace;
         private static MainPage _instance;
         public static MainPage GetInstance()
         {
@@ -98,7 +99,6 @@ namespace xTrace
                     vw_Menu.IsPaneOpen = false;
                     break;
                 case "SETTING":
-                    //vw_Menu.IsPaneOpen = false;
                     frm_Main.Navigate(typeof(Frm_Setting));
                     vw_Menu.DisplayMode = SplitViewDisplayMode.CompactOverlay;
                     break;
@@ -112,7 +112,7 @@ namespace xTrace
 
         }
 
-        private void StartTrace(StackPanel srcObject)
+        private async void StartTrace(StackPanel srcObject)
         {
             ListViewItem item = (ListViewItem)srcObject.Parent;
             vw_Menu.IsPaneOpen = false;
@@ -123,14 +123,16 @@ namespace xTrace
                 xReceiver = Control.xTraceGPSEFISReceiver.GetInstance();
                 xReceiver.onXPlaneStatReceived += XReceiver_onXPlaneStatReceived;
                 Control.xTraceGPSEFISReceiver.GetInstance().StartReceiveAsync();
-
+                dlgTrace = new Views.Dlg_StartTrace();
+                await dlgTrace.ShowAsync();
+                
             }
             else
             {
                 item.Background = new SolidColorBrush(Windows.UI.Colors.Transparent);
                 Control.xTraceGPSEFISReceiver.GetInstance().StopReceive();
-
                 themapitmes.ItemsSource = null;
+                
             }
 
             list_Menu.SelectedItem = null;
@@ -138,6 +140,11 @@ namespace xTrace
 
         private void XReceiver_onXPlaneStatReceived(object sender, DataModel.XCurrent_Status e)
         {
+            if (dlgTrace != null)
+            {
+                dlgTrace.Hide();
+                dlgTrace = null;
+            }
             xStatus = e;
             BindToMap();
         }
@@ -155,9 +162,20 @@ namespace xTrace
                 {
                     list.Add(xStatus);
                     themapitmes.ItemsSource = list;
+
+                    txt_Longtitude.Text = "Longtitude:" + xStatus.GPSStatus.Longitude.ToString();
+                    txt_Altitude.Text = "Altitude:" + xStatus.GPSStatus.Altitude.ToString();
+                    txt_Latitude.Text = "Latitude:" + xStatus.GPSStatus.Latitude.ToString();
+                    txt_HeadingTrueNorth.Text = "Heading:" + xStatus.GPSStatus.HeadingTrueNorth.ToString();
+                    txt_GroundSpeed.Text = "GroundSpeed:" + xStatus.GPSStatus.GroundSpeed.ToString();
                 }
                 return;
             });
+        }
+
+        private void cmd_Map3D_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }
