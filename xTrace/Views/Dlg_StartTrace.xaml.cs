@@ -22,18 +22,11 @@ namespace xTrace.Views
         public Dlg_StartTrace()
         {
             this.InitializeComponent();
-
-            string IPAddr, Port;
-            IPAddr = Control.ConfigUtils.GetInstance().LoadConfig().IPADDR;
-            Port = Control.ConfigUtils.GetInstance().LoadConfig().PORT;
-
-            txt_Content.Text = "IP Address:" + IPAddr + "\r\n" + "Port:" + Port + "\r\nWhen Received Any Data this dialog will automatic close.";
-            
         }
 
         private void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
-            
+
         }
     }
 }
