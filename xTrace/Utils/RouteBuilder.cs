@@ -197,7 +197,6 @@ namespace xTrace.Utils
             else
                 return 1;
 
-            return iRtn;
         }
     }
 }
