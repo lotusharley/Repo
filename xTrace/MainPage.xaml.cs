@@ -32,12 +32,16 @@ namespace xTrace
         Windows.UI.Color colorTitleButtonBg = Windows.UI.ColorHelper.FromArgb(0, 54, 54, 54);
         Control.xTraceGPSEFISReceiver xReceiver;
         Windows.UI.Xaml.Controls.Button btn_xPlane = null;
+        private int maplayout = 0;
+        private double mapZoomLevel;
         private static Views.Dlg_StartTrace dlgTrace;
         private static MainPage _instance;
         public static MainPage GetInstance()
         {
             return _instance;
         }
+
+        Windows.Devices.Geolocation.Geoposition myposition;
 
         public MainPage()
         {
@@ -47,6 +51,25 @@ namespace xTrace
             coreTitleBar = Windows.ApplicationModel.Core.CoreApplication.GetCurrentView().TitleBar;
             CustomerTitleBar();
             _instance = this;
+            InitMapData();
+            cmd_MyFlight.IsEnabled = false;
+            mapZoomLevel = themap.ZoomLevel;
+            themap.ZoomLevelChanged += Themap_ZoomLevelChanged;
+        }
+
+        private void Themap_ZoomLevelChanged(Windows.UI.Xaml.Controls.Maps.MapControl sender, object args)
+        {
+            mapZoomLevel = themap.ZoomLevel;
+            if (mapZoomLevel >= 18)
+                cmd_MapZoom.IsEnabled = false;
+            else
+                cmd_MapZoom.IsEnabled = true;
+
+            if (mapZoomLevel == 1)
+                cmd_MapZoomout.IsEnabled = false;
+            else
+                cmd_MapZoomout.IsEnabled = true;
+
         }
 
         public void CustomerTitleBar()
@@ -60,6 +83,21 @@ namespace xTrace
             titleBar.ButtonBackgroundColor = colorTitleButtonBg;
 
             titleBar.ButtonForegroundColor = colorTitleFg;
+        }
+
+        public async void InitMapData()
+        {
+            myposition = await Utils.GEOUtils.GetMachineLocation();
+            if (myposition == null)
+                return;
+            else
+            {
+                await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                {
+                    themap.Center = myposition.Coordinate.Point;
+                });
+            }
+            
         }
 
         private void splitViewToggle_Click(object sender, RoutedEventArgs e)
@@ -132,6 +170,7 @@ namespace xTrace
                 item.Background = new SolidColorBrush(Windows.UI.Colors.Transparent);
                 Control.xTraceGPSEFISReceiver.GetInstance().StopReceive();
                 themapitmes.ItemsSource = null;
+                cmd_MyFlight.IsEnabled = false;
                 
             }
 
@@ -144,6 +183,7 @@ namespace xTrace
             {
                 dlgTrace.Hide();
                 dlgTrace = null;
+                cmd_MyFlight.IsEnabled = true;
             }
             xStatus = e;
             BindToMap();
@@ -173,9 +213,75 @@ namespace xTrace
             });
         }
 
-        private void cmd_Map3D_Click(object sender, RoutedEventArgs e)
+        private async void cmd_Map3D_Click(object sender, RoutedEventArgs e)
         {
+            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+            {
+                if (themap.DesiredPitch == 60)
+                    themap.DesiredPitch = 0;
+                else
+                    themap.DesiredPitch = 60;
 
+            });
+            
+        }
+
+        private async void cmd_MyFlight_Click(object sender, RoutedEventArgs e)
+        {
+            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+            {
+                Windows.Devices.Geolocation.Geopoint mypoint = this.xStatus.GPSStatus.GeoPointInfo;
+                themap.Center = mypoint;
+            });
+        }
+
+        private async void cmd_Layout_Click(object sender, RoutedEventArgs e)
+        {
+            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+            {
+                this.maplayout = this.maplayout + 1;
+                if(this.maplayout >2)
+                {
+                    this.maplayout = 0;
+                }
+
+                switch(this.maplayout)
+                {
+                    case 0:
+                        themap.Style = Windows.UI.Xaml.Controls.Maps.MapStyle.Road;
+                        break;
+                    case 1:
+                        themap.Style = Windows.UI.Xaml.Controls.Maps.MapStyle.AerialWithRoads;
+                        break;
+                    case 2:
+                        themap.Style = Windows.UI.Xaml.Controls.Maps.MapStyle.Terrain;
+                        break;
+                }
+            });
+        }
+
+        private async void cmd_MapZoom_Click(object sender, RoutedEventArgs e)
+        {
+            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+            {
+                if (mapZoomLevel < 18)
+                {
+                    mapZoomLevel = mapZoomLevel + 1;
+                    themap.ZoomLevel = mapZoomLevel;
+                }
+            });
+        }
+
+        private async void cmd_MapZoomout_Click(object sender, RoutedEventArgs e)
+        {
+            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+            {
+                if (mapZoomLevel > 1)
+                {
+                    mapZoomLevel = mapZoomLevel - 1;
+                    themap.ZoomLevel = mapZoomLevel;
+                }
+            });
         }
     }
 }

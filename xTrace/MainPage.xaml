@@ -45,7 +45,7 @@
         </Grid.RowDefinitions>
 
         <Maps:MapControl x:Name="themap"  RelativePanel.AlignLeftWith="cmd_Menu" RelativePanel.AlignBottomWithPanel="True" Grid.Row="1"
-    		ZoomLevel="3"
+    		ZoomLevel="7" 
     		MapServiceToken="VES4ZIPPK17XkjzKimwS~OHeijyUXAYQ73FSb0NbHQg~Ajgar_Wlh-7Ai50e_tomZQI3oCew8nrqj_bweUxbhIGeBj3gPl-aRUQDJ1IEJGd7" RelativePanel.AlignTopWithPanel="True">
             <Maps:MapItemsControl x:Name="themapitmes">
                 <Maps:MapItemsControl.ItemTemplate>
@@ -71,19 +71,19 @@
         </TextBlock>
 
         <RelativePanel Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,30,0">
-            <Button x:Name="cmd_Map3d" Opacity="0.8" Background="#FF323232" >
+            <Button x:Name="cmd_Map3d" Opacity="0.8" Background="#FF323232" Click="cmd_Map3D_Click" >
                 <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE7AD;" FontSize="20" Margin="0,5,0,0"/>
             </Button>
-            <Button x:Name="cmd_MyFlight" Opacity="0.8" RelativePanel.Below="cmd_Map3d" Background="#FF323232" >
+            <Button x:Name="cmd_MyFlight" Opacity="0.8" RelativePanel.Below="cmd_Map3d" Background="#FF323232" Click="cmd_MyFlight_Click">
                 <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE724;" FontSize="20" Margin="0,5,0,0"/>
             </Button>
-            <Button x:Name="cmd_Layout"  RelativePanel.Below="cmd_MyFlight" Opacity="0.8"  Background="#FF323232" >
+            <Button x:Name="cmd_Layout"  RelativePanel.Below="cmd_MyFlight" Opacity="0.8"  Background="#FF323232" Click="cmd_Layout_Click" >
                 <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#59422;" FontSize="20" Margin="0,5,0,0"/>
             </Button>
-            <Button x:Name="cmd_MapZoom"  RelativePanel.Below="cmd_Layout" Opacity="0.8"  Background="#FF323232" >
-                <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#59152;" FontSize="20" Margin="0,5,0,0"/>
+            <Button x:Name="cmd_MapZoom"  RelativePanel.Below="cmd_Layout" Opacity="0.8"  Background="#FF323232" Click="cmd_MapZoom_Click" >
+                <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#59152;" FontSize="20" Margin="0,5,0,0" />
             </Button>
-            <Button x:Name="cmd_MapZoomout"  RelativePanel.Below="cmd_MapZoom" Opacity="0.8"  Background="#FF323232" >
+            <Button x:Name="cmd_MapZoomout"  RelativePanel.Below="cmd_MapZoom" Opacity="0.8"  Background="#FF323232" Click="cmd_MapZoomout_Click" >
                 <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#59192;" FontSize="20" Margin="0,5,0,0"/>
             </Button>
         </RelativePanel>
