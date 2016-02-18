@@ -115,6 +115,7 @@
     <Compile Include="DataModel\XRunwayinfo.cs" />
     <Compile Include="DataModel\xTraceConfig.cs" />
     <Compile Include="Utils\FileUtils.cs" />
+    <Compile Include="Utils\GEOUtils.cs" />
     <Compile Include="Utils\RouteBuilder.cs" />
     <Compile Include="Utils\StringUtils.cs" />
     <Compile Include="Views\Dlg_StartTrace.xaml.cs">
