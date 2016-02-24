@@ -59,6 +59,49 @@ namespace xTrace.Views
             }
         }
 
+        private async void DrawFlightPlane()
+        {
+            List<Windows.Devices.Geolocation.BasicGeoposition> geopoints = new List<Windows.Devices.Geolocation.BasicGeoposition>();
+            //Windows.Devices.Geolocation.Geopath geopath = new Windows.Devices.Geolocation.Geopath()
+            List<Windows.UI.Xaml.Controls.Maps.MapIcon> waypointIcons = new List<Windows.UI.Xaml.Controls.Maps.MapIcon>();
+            foreach (DataModel.XNavpoint point in flightplan.Waypoints)
+            {
+                navpoints.Add(point);
+                geopoints.Add(new Windows.Devices.Geolocation.BasicGeoposition() { Longitude = double.Parse(point.Longtitude) / 1000000 - 0.000005, Latitude = double.Parse(point.Lantitude) / 1000000 - 0.000005 });
+                System.Diagnostics.Debug.WriteLine(double.Parse(point.Longtitude) / 1000000 + " " + double.Parse(point.Lantitude) / 1000000);
+
+                Windows.UI.Xaml.Controls.Maps.MapIcon icon = new Windows.UI.Xaml.Controls.Maps.MapIcon();
+                icon.Image = Windows.Storage.Streams.RandomAccessStreamReference.CreateFromUri(new Uri("ms-appx:///Assets/navpoint.png"));
+                icon.Location = new Windows.Devices.Geolocation.Geopoint(new Windows.Devices.Geolocation.BasicGeoposition()
+                {
+                    Latitude = double.Parse(point.Lantitude) / 1000000 - 0.000005,
+                    Longitude = double.Parse(point.Longtitude)/1000000 - 0.000005
+                });
+                icon.NormalizedAnchorPoint = new Point(0.5, 1.0);
+                icon.Title = point.PointName;
+                waypointIcons.Add(icon);
+            }
+            Windows.Devices.Geolocation.Geopath geopath = new Windows.Devices.Geolocation.Geopath(geopoints);
+
+            await rootFrame.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+            {
+                
+                Windows.UI.Xaml.Controls.Maps.MapControl themap = (Windows.UI.Xaml.Controls.Maps.MapControl)rootFrame.FindName("themap");
+                Windows.UI.Xaml.Controls.Maps.MapPolyline line = new Windows.UI.Xaml.Controls.Maps.MapPolyline();
+                line.Path = geopath;
+                line.StrokeColor = Windows.UI.Colors.Red;
+                line.StrokeDashed = true;
+                line.StrokeThickness = 3;
+                themap.MapElements.Clear();
+                themap.MapElements.Add(line);
+
+                foreach(Windows.UI.Xaml.Controls.Maps.MapIcon icon in waypointIcons)
+                {
+                    themap.MapElements.Add(icon);
+                }
+            });
+        }
+
         private async void btn_AppendNavpoint_Click(object sender, RoutedEventArgs e)
         {
             #region Init RouteBuilder
@@ -116,27 +159,7 @@ namespace xTrace.Views
             flightplan = await routebuilder.CreateFlightPlan(departureairport, approchairport, waypoints);
             navpoints.Clear();
 
-            List<Windows.Devices.Geolocation.BasicGeoposition> geopoints = new List<Windows.Devices.Geolocation.BasicGeoposition>();
-            //Windows.Devices.Geolocation.Geopath geopath = new Windows.Devices.Geolocation.Geopath()
-            foreach (DataModel.XNavpoint point in flightplan.Waypoints)
-            {
-                navpoints.Add(point);
-                geopoints.Add(new Windows.Devices.Geolocation.BasicGeoposition() {Longitude = double.Parse(point.Longtitude) / 1000000,Latitude = double.Parse(point.Lantitude)/1000000 });
-                System.Diagnostics.Debug.WriteLine(double.Parse(point.Longtitude) / 1000000 + " " + double.Parse(point.Lantitude) / 1000000);
-            }
-            Windows.Devices.Geolocation.Geopath geopath = new Windows.Devices.Geolocation.Geopath(geopoints);
-
-            await rootFrame.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
-             {
-                 Windows.UI.Xaml.Controls.Maps.MapControl themap = (Windows.UI.Xaml.Controls.Maps.MapControl)rootFrame.FindName("themap");
-                 Windows.UI.Xaml.Controls.Maps.MapPolyline line = new Windows.UI.Xaml.Controls.Maps.MapPolyline();
-                 line.Path = geopath;
-                 line.StrokeColor = Windows.UI.Colors.Red;
-                 line.StrokeDashed = true;
-                 line.StrokeThickness = 5;
-                 themap.MapElements.Add(line);
-                 
-             });
+            DrawFlightPlane();
 
             lst_Waypoints.ItemsSource = navpoints;
             msgbox.Content = "Done";
@@ -153,6 +176,31 @@ namespace xTrace.Views
             txt_Approch_ICAO.Text = string.Empty;
             txt_Departure_ICAO.Text = string.Empty;
             txt_Waypoint_Source.Text = string.Empty;
+        }
+
+        private async void ListItemButtom_Click(object sender, RoutedEventArgs e)
+        {
+            Button btn_Sender = (Button)sender;
+            string cmdArgs = btn_Sender.CommandParameter.ToString();
+
+            if(cmdArgs == flightplan.Approch.Airportcode || cmdArgs == flightplan.Departure.Airportcode)
+            {
+                msgbox.Content = "Can't Remove Approch/Departure Airport From FlightPlane";
+                await msgbox.ShowAsync();
+                return;
+            }
+
+            foreach(DataModel.XNavpoint p in flightplan.Waypoints)
+            {
+                if(p.PointName == cmdArgs)
+                {
+                    flightplan.Waypoints.Remove(p);
+                    break;
+                }
+            }
+            DrawFlightPlane();
+            lst_Waypoints.ItemsSource = null;
+            lst_Waypoints.ItemsSource = flightplan.Waypoints;
         }
     }
 }

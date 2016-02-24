@@ -14,14 +14,12 @@
                     <ColumnDefinition Width="85"></ColumnDefinition>
                     <ColumnDefinition Width="85"></ColumnDefinition>
                     <ColumnDefinition Width="85"></ColumnDefinition>
-                    <ColumnDefinition Width="85"></ColumnDefinition>
-                    <ColumnDefinition Width="30"></ColumnDefinition>
+                    <ColumnDefinition Width="45"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
                 <TextBlock Tag="navpoint" Grid.Column="0" Text="{Binding PointName}"></TextBlock>
-                <TextBlock Tag="frequence"  Grid.Column="1" Text="{Binding Frequence}"></TextBlock>
-                <TextBlock Tag="longtitude" Grid.Column="2" Text="{Binding Longtitude}"></TextBlock>
-                <TextBlock Tag="lantitude"  Grid.Column="3" Text="{Binding Lantitude}"></TextBlock>
-                <Button Grid.Column="2" Grid.ColumnSpan="4">
+                <TextBlock Tag="longtitude" Grid.Column="1" Text="{Binding Longtitude}"></TextBlock>
+                <TextBlock Tag="lantitude"  Grid.Column="2" Text="{Binding Lantitude}"></TextBlock>
+                <Button Grid.Column="3" Grid.ColumnSpan="3" Click="ListItemButtom_Click" CommandParameter="{Binding PointName}">
                     <TextBlock Text="&#xE711;"  FontFamily="Segoe MDL2 Assets"></TextBlock>
                 </Button>
                 
@@ -42,6 +40,7 @@
             </StackPanel>
             <TextBox x:Name="txt_Waypoint_Source" RelativePanel.AlignTopWithPanel="True" RelativePanel.AlignLeftWithPanel="True" 
                      RelativePanel.AlignRightWithPanel="True" Height="80" 
+                     Margin="0,0,0,20"
                      PlaceholderText="VM W77 LADIX V31 YQG W142 DALIM A593 DPX" MaxWidth="380" Header="Navaids/Waypoints/ATS" TextWrapping="Wrap"></TextBox>
             <ComboBox x:Name="list_Cycles" RelativePanel.AlignLeftWithPanel="True" RelativePanel.Below="txt_Waypoint_Source"></ComboBox>
             <Button x:Name="btn_AppendNavpoint" Width="170" HorizontalAlignment="Stretch" Click="btn_AppendNavpoint_Click" RelativePanel.Below="txt_Waypoint_Source" RelativePanel.AlignRightWithPanel="True" Margin="0,0,10,0">
