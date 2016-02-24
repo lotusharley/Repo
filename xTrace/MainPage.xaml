@@ -46,7 +46,7 @@
 
         <Maps:MapControl x:Name="themap"  RelativePanel.AlignLeftWith="cmd_Menu" RelativePanel.AlignBottomWithPanel="True" Grid.Row="1"
     		ZoomLevel="7" 
-    		MapServiceToken="" RelativePanel.AlignTopWithPanel="True">
+    		MapServiceToken="VES4ZIPPK17XkjzKimwS~OHeijyUXAYQ73FSb0NbHQg~Ajgar_Wlh-7Ai50e_tomZQI3oCew8nrqj_bweUxbhIGeBj3gPl-aRUQDJ1IEJGd7" RelativePanel.AlignTopWithPanel="True">
             <Maps:MapItemsControl x:Name="themapitmes">
                 <Maps:MapItemsControl.ItemTemplate>
                     <DataTemplate>
