@@ -27,9 +27,10 @@ namespace xTrace
 
         Windows.UI.ViewManagement.ApplicationViewTitleBar titleBar;
         Windows.ApplicationModel.Core.CoreApplicationViewTitleBar coreTitleBar;
-        Windows.UI.Color colorTitleBg = Windows.UI.ColorHelper.FromArgb(0, 31, 31, 31);
+        Windows.UI.Color colorTitleBg = Windows.UI.ColorHelper.FromArgb(30, 31, 31, 31);
         Windows.UI.Color colorTitleFg = Windows.UI.Colors.White;
-        Windows.UI.Color colorTitleButtonBg = Windows.UI.ColorHelper.FromArgb(0, 54, 54, 54);
+        Windows.UI.Color colorTitleButtonBg = Windows.UI.ColorHelper.FromArgb(50, 54, 54, 54);
+        Windows.UI.Color colorTitleButtonBgHover = Windows.UI.ColorHelper.FromArgb(70, 70, 70, 70);
         Control.xTraceGPSEFISReceiver xReceiver;
         Windows.UI.Xaml.Controls.Button btn_xPlane = null;
         private int maplayout = 0;
@@ -49,12 +50,33 @@ namespace xTrace
             
             titleBar = Windows.UI.ViewManagement.ApplicationView.GetForCurrentView().TitleBar;
             coreTitleBar = Windows.ApplicationModel.Core.CoreApplication.GetCurrentView().TitleBar;
+            
             CustomerTitleBar();
             _instance = this;
             InitMapData();
             cmd_MyFlight.IsEnabled = false;
             mapZoomLevel = themap.ZoomLevel;
             themap.ZoomLevelChanged += Themap_ZoomLevelChanged;
+
+            frm_Main.Navigated += Frm_Main_Navigated;
+        }
+
+        private void Frm_Main_Navigated(object sender, NavigationEventArgs e)
+        {
+            //btn_Nav.Visibility = Visibility.Visible;
+            Windows.UI.Core.SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = Windows.UI.Core.AppViewBackButtonVisibility.Visible;
+            Windows.UI.Core.SystemNavigationManager.GetForCurrentView().BackRequested += MainPage_BackRequested;
+        }
+
+        private void MainPage_BackRequested(object sender, Windows.UI.Core.BackRequestedEventArgs e)
+        {
+            if (frm_Main.CanGoBack)
+                frm_Main.GoBack();
+            else
+                frm_Main.Content = null;
+
+            if (frm_Main.Content == null)
+                Windows.UI.Core.SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = Windows.UI.Core.AppViewBackButtonVisibility.Collapsed;
         }
 
         private void Themap_ZoomLevelChanged(Windows.UI.Xaml.Controls.Maps.MapControl sender, object args)
@@ -74,15 +96,26 @@ namespace xTrace
 
         public void CustomerTitleBar()
         {
-            coreTitleBar.ExtendViewIntoTitleBar = true;
+            //coreTitleBar.ExtendViewIntoTitleBar = true;
 
-            Window.Current.SetTitleBar(GridTitleBar);
-            
+            //Window.Current.SetTitleBar(GridTitleBar);
+
+            titleBar.InactiveBackgroundColor = colorTitleBg;
+            titleBar.InactiveForegroundColor = colorTitleFg;
             titleBar.BackgroundColor = colorTitleBg;
             titleBar.ForegroundColor = colorTitleFg;
-            titleBar.ButtonBackgroundColor = colorTitleButtonBg;
+            titleBar.ButtonHoverBackgroundColor = colorTitleButtonBg;
+            titleBar.ButtonHoverForegroundColor = Windows.UI.Colors.White;
 
+            titleBar.ButtonBackgroundColor = colorTitleBg;
             titleBar.ButtonForegroundColor = colorTitleFg;
+
+            titleBar.ButtonHoverBackgroundColor = colorTitleButtonBgHover;
+            titleBar.ButtonHoverForegroundColor = Windows.UI.Colors.White;
+
+            titleBar.ButtonPressedBackgroundColor = colorTitleButtonBgHover;
+            titleBar.ButtonPressedForegroundColor = Windows.UI.Colors.White;
+
         }
 
         public async void InitMapData()
@@ -137,6 +170,7 @@ namespace xTrace
                     vw_Menu.IsPaneOpen = false;
                     break;
                 case "SETTING":
+                    vw_Menu.IsPaneOpen = false;
                     frm_Main.Navigate(typeof(Frm_Setting));
                     vw_Menu.DisplayMode = SplitViewDisplayMode.CompactOverlay;
                     break;
@@ -282,6 +316,19 @@ namespace xTrace
                     themap.ZoomLevel = mapZoomLevel;
                 }
             });
+        }
+
+        private void btn_Nav_Click(object sender, RoutedEventArgs e)
+        {
+            frm_Main.Content = null;
+        }
+
+        private void xPlaneLocations_Click(object sender, RoutedEventArgs e)
+        {
+            if (vw_xStatus.Visibility == Visibility.Collapsed)
+                vw_xStatus.Visibility = Visibility.Visible;
+            else
+                vw_xStatus.Visibility = Visibility.Collapsed;
         }
     }
 }
